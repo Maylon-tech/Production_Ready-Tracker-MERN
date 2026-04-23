@@ -13,11 +13,11 @@ subscriptionRouter.put("/:id", (req, res) => res.send("UPDATE Subscription"))
 subscriptionRouter.delete("/:id", (req, res) => res.send("DELETE a Subscription"))
 
 
-subscriptionRouter.get("/user/:id", (req, res) => res.send("All User Subscription"))
+subscriptionRouter.get("/user/:id", (req, res) => res.send("Get All User Subscription"))
 
-subscriptionRouter.get("/:id/cancel", (req, res) => res.send("CANCEL Subscription"))
+subscriptionRouter.put("/:id/cancel", (req, res) => res.send("CANCEL Subscription"))
 
-subscriptionRouter.get("/upcoming-renewals", (req, res) => res.send("GET All Subscription"))
+subscriptionRouter.get("/upcoming-renewals", (req, res) => res.send("GET Upcoming Renewals"))
 
 
 export default subscriptionRouter
