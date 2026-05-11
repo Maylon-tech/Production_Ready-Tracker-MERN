@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser'
 import userRouter from './routes/user.routes.js'
 import authRouter from './routes/auth.routes.js'
 import subscriptionRouter from './routes/subscription.routes.js'
-
 import errorHandlerMiddleware from './middleware/errorHandler.middleware.js'
 
 import { PORT } from './config/env.js'
