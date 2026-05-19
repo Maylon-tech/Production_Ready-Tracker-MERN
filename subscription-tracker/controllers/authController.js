@@ -7,22 +7,24 @@ import { JWT_EXPIRES_IN, JWT_SECRETE} from '../config/env.js'
 // POST request
 export const signUp = async (req, res, next) => {
     // Implement sign up login here...
-    const session = await mongoose.startSession()
+    const session = await mongoose.startSession() // Atomic Operations - 
     session.startTransaction()
+
     try {
         // Logic to create a new user
         const { name, email, password } = req.body  // destructure from BODY (input layout on frontend.)
         // Check if a user already Exist
-        const existingUser = await User.findOne({ email })
+        const existingUser = await User.findOne({ email })  // 1 st Database Call
         if (existingUser) {
             const error = new Error('User already exist.!')
             error.statusCode = 409
             throw error
         }
-        // Hashing password
+        // Hashing password - secure password when save on database.
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
-        const newUser = await User.create([{
+
+        const newUser = await User.create([{  // Create DOc to save on database                            
             name, 
             email,
             password: hashedPassword
@@ -46,13 +48,12 @@ export const signUp = async (req, res, next) => {
             }
         })
 
-    } catch (error) {
+    } catch (error) {  // IF something went wrong...
         await session.abortTransaction()
         session.endSession()
         next(error)
     }
 }
-
 
 export const signIn = async (req, res, next) => {
     // Implement sign in login here...
@@ -67,14 +68,33 @@ export const signIn = async (req, res, next) => {
             throw error
         }
 
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+
+        if (!isPasswordValid) {
+            const error = new Error(('Invalid...'))
+            error.statusCode = 401
+            throw error
+        }
+
+        const token = jwt.sign(
+            { userId: user._id },
+            JWT_SECRETE,
+            {expiresIn: JWT_EXPIRES_IN}
+        )
+
+        res.status(200).json({
+            success: true,
+            message: 'User signed in successfully',
+            data: {
+                token,
+                user,
+            }
+        })
 
     } catch (error) {
         next(error)
     }
 }
-
-
-
 
 export const signOut = async (req, res, next) => {
     // Implement sign out login here...
