@@ -7,6 +7,7 @@ import userRouter from './routes/user.routes.js'
 import authRouter from './routes/auth.routes.js'
 import subscriptionRouter from './routes/subscription.routes.js'
 import errorHandlerMiddleware from './middleware/errorHandler.middleware.js'
+import arcjetMiddleware from './middleware/arcjet.middleware.js'
 
 import { PORT } from './config/env.js'
 
@@ -14,6 +15,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(arcjetMiddleware)
 
 dotenv.config()
 connectToDatabase()
